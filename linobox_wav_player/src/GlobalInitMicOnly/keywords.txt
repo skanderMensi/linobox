@@ -1,0 +1,3 @@
+GlobalInit	KEYWORD1
+eeprom_clear_all	KEYWORD2
+eeprom_write_1byte	KEYWORD2

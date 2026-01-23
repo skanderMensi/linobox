@@ -1,0 +1,6 @@
+PotTeensy KEYWORD1
+run_potentiometer KEYWORD2
+read_pot KEYWORD2
+pot_to_parameter KEYWORD2
+get_parameter_value KEYWORD2
+get_pot_value KEYWORD2

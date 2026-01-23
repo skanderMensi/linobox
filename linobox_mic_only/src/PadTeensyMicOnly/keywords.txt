@@ -1,0 +1,7 @@
+PadTeensy KEYWORD1
+run KEYWORD2
+set_callback_function KEYWORD2
+callback_trellis KEYWORD2
+get_color KEYWORD2
+display_animation KEYWORD2
+clear_screen KEYWORD2
