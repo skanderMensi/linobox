@@ -159,10 +159,12 @@ TrellisCallback PadTeensy::callback_trellis(keyEvent evt){
   if(evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING){  // callback for key presses
     _trellis->pixels.setPixelColor(evt.bit.NUM, led_colors[evt.bit.NUM]);
     _new_message = true;
-    _message = evt.bit.NUM;
+    _message = int(evt.bit.NUM) + 1000;
     blink_status[evt.bit.NUM] = !blink_status[evt.bit.NUM];
   }
   else if(evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING){
+    _new_message = true;
+    _message = int(evt.bit.NUM);
     if (led_status[evt.bit.NUM]){
       _trellis->pixels.setPixelColor(evt.bit.NUM, led_colors[evt.bit.NUM]); //off falling
     }
@@ -178,6 +180,6 @@ void PadTeensy::reset_message(){
   _new_message = false;
 }
 
-uint8_t PadTeensy::get_message(){
+uint16_t PadTeensy::get_message(){
   return _message;
 }

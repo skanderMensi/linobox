@@ -23,7 +23,7 @@ class PadTeensy
     // CALLBACK FUNCTION
     TrellisCallback callback_trellis(keyEvent evt);
     void reset_message();
-    uint8_t get_message();
+    uint16_t get_message();
 
 
     // UTILITY FUNCTIONS
@@ -40,7 +40,7 @@ class PadTeensy
 
     // MESSAGE
     bool _new_message = false;
-    uint8_t _message;
+    uint16_t _message;
 
     // LED COLOR
     uint32_t led_colors[nbrLed];

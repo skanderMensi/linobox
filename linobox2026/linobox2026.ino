@@ -1,7 +1,8 @@
 #include "src/GlobalInit/GlobalInit.h"
 #include "src/PadTeensy/PadTeensy.h"
 #include "src/PotTeensy/PotTeensy.h"
-#include "src/AudioEffect/AudioEffect.h"
+// #include "src/AudioEffect/AudioEffect.h"
+#include "src/AudioLooper/AudioLooper.h"
 #include <SPI.h>
 #include <Wire.h>
 #include <Audio.h>
@@ -18,8 +19,11 @@ float volume, param;
 PotTeensy potVol;
 PotTeensy potParam;
 
-// AUDIO EFFECT
-AudioEffect audioEffect;
+// // AUDIO EFFECT
+// AudioEffect audioEffect;
+
+// AUDIO LOOPER
+AudioLooper audioLooper;
 
 // TIMING
 unsigned long previousMillis;
@@ -38,18 +42,19 @@ void setup() {
 
   // init trellis pad
   pad.init(trellis_callback_wrapper);
+  Serial.println("NeoTrellis Initialized");
 
   // init audio
-  audioEffect.init();
+  audioLooper.init();
 
   // init potentiometers
-  potVol.init(0);
+  potVol.init(1);
   volume = potVol.get_parameter();
-  audioEffect.set_volume(volume);
+  audioLooper.set_volume(volume);   // HeadPhones
   
-  potParam.init(1);
-  param = potParam.get_parameter();
-  audioEffect.set_frequency(map(int(param * 100), 0, 100, 0, 15000));
+  // potParam.init(0);
+  // param = potParam.get_parameter();
+  // audioEffect.set_frequency(map(int(param * 100), 0, 100, 0, 15000));
 
   // Init done
   previousMillis = millis();
@@ -57,31 +62,73 @@ void setup() {
 
 // MAIN LOOP
 void loop() {
-  uint8_t message;
+  uint16_t message;
   
   if (pad.run()){
     message = pad.get_message();
     pad.reset_message();
     Serial.print("message from trellis: ");
     Serial.println(message);
+    bool falling = false;
+    if (message >= 1000){
+      message = message - 1000;
+      falling = true;
+    }
+    switch(message){
+      case 0:
+        if (falling){
+          Serial.println("Record Button Pressed");
+          if (audioLooper.get_mode() == 2){
+            audioLooper.stopPlaying();
+            }
+          if (audioLooper.get_mode() == 0){
+            audioLooper.startRecording();
+            }
+        }
+        else{
+          Serial.println("Record Button Released");
+          audioLooper.stopRecording();
+          audioLooper.startPlaying();
+        }
+        break;
+      case 4:
+        if (falling){
+          Serial.println("Stop Button Press");
+          if (audioLooper.get_mode() == 0) {
+            audioLooper.startPlaying();
+          }
+          else if (audioLooper.get_mode() == 2) {
+            audioLooper.stopPlaying();
+          }
+        }
+        break;
+      default:
+        if (falling){
+            Serial.print("play note @(Hz): ");
+            Serial.println(message * 220);
+            audioLooper.noteOn(message * 220);
+        }
+        break;  
+    }
+    
   }
 
   // VOLUME POTENTIOMETER
   if (potVol.run()){
     volume = potVol.get_parameter();
-    audioEffect.set_volume(volume);
+    audioLooper.set_volume(volume);   // HeadPhones
 
     Serial.print("volume = ");
     Serial.println(volume);
   }
-  // PARAM POTENTIOMETER
-  if (potParam.run()){
-    param = potParam.get_parameter();
-    audioEffect.set_frequency(map(int(param * 100), 0, 100, 0, 15000));
+  // // PARAM POTENTIOMETER
+  // if (potParam.run()){
+  //   param = potParam.get_parameter();
+  //   Serial.print("parameters = ");
+  //   Serial.println(param);
     
-    Serial.print("parameters = ");
-    Serial.println(param);
-  }
+  //   audioEffect.set_frequency(map(int(param * 100), 0, 100, 0, 15000));
+  // }
 
 }
 

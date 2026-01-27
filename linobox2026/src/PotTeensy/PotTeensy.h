@@ -39,6 +39,7 @@ class PotTeensy
     // ENCODER READ
     int16_t _pot_value = 0;
     float _parameter_value = 0.0;
+    float _previous_parameter_value = 0.0;
     bool _new_parameter = true;
 
 };

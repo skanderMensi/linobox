@@ -55,6 +55,8 @@ void AudioEffect::init(){
     _audioShield->audioPostProcessorEnable();
     _audioShield->eqSelect(2);
     _audioShield->volume(0.6);
+    _audioShield->dacVolumeRamp();
+    _audioShield->dacVolume(0.6);
 
     // INIT MIXER BASER ON MODE 0
     _inputAmp->gain(1.0);
@@ -79,6 +81,7 @@ void AudioEffect::set_frequency(int freq){
 
 void AudioEffect::set_volume(float vol){
     _audioShield->volume(vol);
+    _audioShield->dacVolume(vol);
 }
 
 void AudioEffect::run(){

@@ -16,10 +16,11 @@ void PotTeensy::init(int pot_id){
   _pin = potentiometerPins[_pot_id];
 
   // INIT POTENTIOMETER
-  _pot = new ResponsiveAnalogRead(_pin, true);
+  _pot = new ResponsiveAnalogRead(_pin, true, 0.001);
   _pot->update();
   _pot_value = _pot->getValue();
   _parameter_value = pot_to_parameter(_pot_value);
+  _previous_parameter_value = _parameter_value;
   Serial.print("Init potentiometers on pin ");
   Serial.print(_pin);
   Serial.print(" | pot value = ");
@@ -37,8 +38,11 @@ void PotTeensy::read_pot(){
   // IF GET NEW VALUE -> UPDATE AND SEND
   if(_pot->hasChanged()) {
     _pot_value = _pot->getValue();
+    _previous_parameter_value = _parameter_value;
     _parameter_value = pot_to_parameter(_pot_value);
-    _new_parameter = true;
+    if (_previous_parameter_value != _parameter_value){
+      _new_parameter = true;
+    }
   }
 
 }
