@@ -55,11 +55,11 @@ void AudioLooper::init(){
     _audioShield->enable();
     _audioShield->inputSelect(AUDIO_INPUT_MIC);
     _audioShield->audioPostProcessorEnable();
-    _audioShield->micGain(10);
+    _audioShield->micGain(20);
     _audioShield->eqSelect(2);
-    _audioShield->volume(0.6);
+    _audioShield->volume(0.8);
     _audioShield->dacVolumeRamp();
-    _audioShield->dacVolume(0.6);
+    _audioShield->dacVolume(0.8);
 
     // INIT INPUT AMPLIFIER
     _inputAmp->gain(1.0);
@@ -164,7 +164,7 @@ void AudioLooper::continueRecording() {
     memcpy(buffer+256, _queue->readBuffer(), 256);
     _queue->freeBuffer();
     // write all 512 bytes to the SD card
-    elapsedMicros usec = 0;
+    // elapsedMicros usec = 0;
     frec.write(buffer, 512);
     // Uncomment these lines to see how long SD writes
     // are taking.  A pair of audio blocks arrives every
@@ -176,8 +176,8 @@ void AudioLooper::continueRecording() {
     // approximately 301700 us of audio, to allow time
     // for occasional high SD card latency, as long as
     // the average write time is under 5802 us.
-    //Serial.print("SD write, us=");
-    //Serial.println(usec);
+    // Serial.print("SD write, us=");
+    // Serial.println(usec);
   }
 }
 
@@ -212,4 +212,8 @@ void AudioLooper::stopPlaying() {
   Serial.println("stopPlaying");
   if (_mode == 2) _playSdRaw->stop();
   _mode = 0;
+}
+
+unsigned long AudioLooper::getLoopDuration(){
+    return _loopTempInterval;
 }

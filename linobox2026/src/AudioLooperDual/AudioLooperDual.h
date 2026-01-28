@@ -3,8 +3,8 @@
   Created by S. Mensi, September, 2022.
 */
 
-#ifndef AudioLooper_h
-#define AudioLooper_h
+#ifndef AudioLooperDual_h
+#define AudioLooperDual_h
 #include "Arduino.h"
 #include "Audio.h"
 #include "Wire.h"
@@ -14,10 +14,10 @@
 #include "../GlobalInit/GlobalInit.h"
 
 
-class AudioLooper
+class AudioLooperDual
 {
   public:
-    AudioLooper();
+    AudioLooperDual();
     void init();
 
     // MAIN FUNCTION
@@ -27,16 +27,16 @@ class AudioLooper
     void set_volume(float value);
     void noteOn(int freq);
     void noteOff();
-    int get_mode();
+    int get_mode(int loopID);
 
     // LOOPER FUNCTIONS
-    void startRecording();
-    void continueRecording();
-    void stopRecording();
-    void startPlaying();
-    void continuePlaying();
-    void stopPlaying();
-    unsigned long getLoopDuration();
+    void startRecording(int loopID);
+    void continueRecording(int loopID);
+    void stopRecording(int loopID);
+    void startPlaying(int loopID);
+    void continuePlaying(int loopID);
+    void stopPlaying(int loopID);
+    unsigned long getLoopDuration(int loopID);
 
   private:
 
@@ -45,8 +45,10 @@ class AudioLooper
     AudioAmplifier           *_inputAmp;
     AudioSynthKarplusStrong  *_stringSynth;
     AudioMixer4              *_inputMixer;
-    AudioRecordQueue         *_queue;
-    AudioPlaySdRaw           *_playSdRaw;
+    AudioRecordQueue         *_queue1;
+    AudioRecordQueue         *_queue2;
+    AudioPlaySdRaw           *_playSdRaw1;
+    AudioPlaySdRaw           *_playSdRaw2;
     AudioMixer4              *_outputMixer;
     AudioOutputI2S           *_i2s2;
     AudioControlSGTL5000     *_audioShield;
@@ -60,14 +62,23 @@ class AudioLooper
     AudioConnection         *_patchCord6;
     AudioConnection         *_patchCord7;
     AudioConnection         *_patchCord8;
+    AudioConnection         *_patchCord9;
+    AudioConnection         *_patchCord10;
 
     // PARAMETERS
     bool _note_is_playing = false;
     unsigned long _previousMillis = 0;
     unsigned long _noteDurationMillis = 250;
-    unsigned long _loopTempInterval = 0;
-    File frec;  // The file where data is recorded
-    int _mode = 0;
+    
+    // LOOP 1
+    unsigned long _loopTempInterval1 = 0;
+    File frec1;  // The file where data is recorded
+    int _mode1 = 0;
+
+    // LOOP 2
+    unsigned long _loopTempInterval2 = 0;
+    File frec2;  // The file where data is recorded
+    int _mode2 = 0;
 };
 
 #endif

@@ -32,6 +32,9 @@ class PadTeensy
     void init_pad();
     void black_all();
     void blink_led();
+    void set_loop_duration(int loopID, unsigned long duration);
+    void blink_loop_status(int loopID, bool status);
+    void blink_loop();
 
   private:
 
@@ -56,12 +59,23 @@ class PadTeensy
     unsigned long _previousMillis = 0;
     unsigned long _delayMillis = 25;
     unsigned long _previousMillisAnimation = 0;
-
     unsigned long _delayMillisBlink = 1000;
     unsigned long _previousMillisBlink = 0;
     int _pad_id_animation = 0;
     bool _animation_mode = true;
     int _mode = 1;
+
+    // LOOP 1
+    unsigned long _loopDuration1 = 100;
+    elapsedMillis _sinceLastLoop1 = 0;
+    elapsedMillis _sinceLastLoopON1 = 0;
+    bool _blink_loop_status1 = false;
+    
+    // LOOP 2
+    unsigned long _loopDuration2 = 100;
+    elapsedMillis _sinceLastLoop2 = 0;
+    elapsedMillis _sinceLastLoopON2 = 0;
+    bool _blink_loop_status2 = false;
 
 };
 

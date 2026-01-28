@@ -2,8 +2,7 @@
 #include "src/PadTeensy/PadTeensy.h"
 #include "src/PotTeensy/PotTeensy.h"
 // #include "src/AudioEffect/AudioEffect.h"
-// #include "src/AudioLooper/AudioLooper.h"
-#include "src/AudioLooperDual/AudioLooperDual.h"
+#include "src/AudioLooper/AudioLooper.h"
 #include <SPI.h>
 #include <Wire.h>
 #include <Audio.h>
@@ -24,9 +23,8 @@ PotTeensy potParam;
 // AudioEffect audioEffect;
 
 // AUDIO LOOPER
-AudioLooperDual audioLooper;
-unsigned long loopDuration1 = 0;
-unsigned long loopDuration2 = 0;
+AudioLooper audioLooper;
+unsigned long loopDuration = 0;
 
 // TIMING
 unsigned long previousMillis;
@@ -49,11 +47,9 @@ void setup() {
 
   // init audio
   audioLooper.init();
-  loopDuration1 = audioLooper.getLoopDuration(1);
-  pad.set_loop_duration(1, loopDuration1);
-  loopDuration2 = audioLooper.getLoopDuration(2);
-  pad.set_loop_duration(2, loopDuration2);
-  
+  loopDuration = audioLooper.getLoopDuration();
+  pad.set_loop_duration(loopDuration);
+
   // init potentiometers
   potVol.init(1);
   volume = potVol.get_parameter();
@@ -84,75 +80,39 @@ void loop() {
       falling = true;
     }
     switch(message){
-      // LOOP 1
       case 0:
         if (falling){
-          Serial.println("Record Button Pressed - LOOP 1");
-          if (audioLooper.get_mode(1) == 2){
-            pad.blink_loop_status(1, false);
-            audioLooper.stopPlaying(1);
+          Serial.println("Record Button Pressed");
+          if (audioLooper.get_mode() == 2){
+            pad.blink_loop_status(false);
+            audioLooper.stopPlaying();
             }
-          if (audioLooper.get_mode(1) == 0){
-            audioLooper.startRecording(1);
+          if (audioLooper.get_mode() == 0){
+            audioLooper.startRecording();
             }
         }
         else{
-          Serial.println("Record Button Released - LOOP 1");
-          audioLooper.stopRecording(1);
-          loopDuration1 = audioLooper.getLoopDuration(1);
-          pad.set_loop_duration(1, loopDuration1);
-          pad.blink_loop_status(1, true);
-          audioLooper.startPlaying(1);
+          Serial.println("Record Button Released");
+          audioLooper.stopRecording();
+          loopDuration = audioLooper.getLoopDuration();
+          pad.set_loop_duration(loopDuration);
+          pad.blink_loop_status(true);
+          audioLooper.startPlaying();
         }
         break;
       case 4:
         if (falling){
-          Serial.println("Stop Button Press - LOOP 1");
-          if (audioLooper.get_mode(1) == 0) {
-            pad.blink_loop_status(1, true);
-            audioLooper.startPlaying(1);
+          Serial.println("Stop Button Press");
+          if (audioLooper.get_mode() == 0) {
+            pad.blink_loop_status(true);
+            audioLooper.startPlaying();
           }
-          else if (audioLooper.get_mode(1) == 2) {
-            pad.blink_loop_status(1, false);
-            audioLooper.stopPlaying(1);
-          }
-        }
-        break;
-        // LOOP 2
-        case 8:
-        if (falling){
-          Serial.println("Record Button Pressed - LOOP 2");
-          if (audioLooper.get_mode(2) == 2){
-            pad.blink_loop_status(2, false);
-            audioLooper.stopPlaying(2);
-            }
-          if (audioLooper.get_mode(2) == 0){
-            audioLooper.startRecording(2);
-            }
-        }
-        else{
-          Serial.println("Record Button Released - LOOP 2");
-          audioLooper.stopRecording(2);
-          loopDuration2 = audioLooper.getLoopDuration(2);
-          pad.set_loop_duration(2, loopDuration2);
-          pad.blink_loop_status(2, true);
-          audioLooper.startPlaying(2);
-        }
-        break;
-      case 12:
-        if (falling){
-          Serial.println("Stop Button Press - LOOP 2");
-          if (audioLooper.get_mode(2) == 0) {
-            pad.blink_loop_status(2, true);
-            audioLooper.startPlaying(2);
-          }
-          else if (audioLooper.get_mode(2) == 2) {
-            pad.blink_loop_status(2, false);
-            audioLooper.stopPlaying(2);
+          else if (audioLooper.get_mode() == 2) {
+            pad.blink_loop_status(false);
+            audioLooper.stopPlaying();
           }
         }
         break;
-      // DEFAULT
       default:
         if (falling){
             Serial.print("play note @(Hz): ");

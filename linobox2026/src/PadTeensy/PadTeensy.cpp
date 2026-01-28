@@ -62,6 +62,7 @@ bool PadTeensy::run(){
 
   // BLINK LED
   this->blink_led();
+  this->blink_loop();
 
   // DISPLAY ANIMATION EVERY 10 SECONDS
   if (_mode == 0){  // ANIMATED LOGO
@@ -103,17 +104,82 @@ void PadTeensy::blink_led(){
   if (millis() - _previousMillisBlink > _delayMillisBlink){
     blink_state = !blink_state;
     for (uint16_t i=0; i<nbrLed; i++){
-      if (blink_status[i]){
-        if (!blink_state){
-          _trellis->pixels.setPixelColor(i, led_colors[i]);
-        }
-        else{
-          _trellis->pixels.setPixelColor(i, 0);
+      if (i != 4 || i !=12){
+        if (blink_status[i]){
+          if (!blink_state){
+            _trellis->pixels.setPixelColor(i, led_colors[i]);
+          }
+          else{
+            _trellis->pixels.setPixelColor(i, 0);
+          }
         }
       }
     }
     _trellis->pixels.show();
     _previousMillisBlink = millis();
+  }
+}
+
+void PadTeensy::set_loop_duration(int loopID, unsigned long duration){
+  if (loopID == 1){
+    blink_status[4] = true;
+    _loopDuration1 = duration;
+    _sinceLastLoop1 = 0;
+    _sinceLastLoopON1 = 0;
+  }
+  else if (loopID == 2){
+    blink_status[12] = true;
+    _loopDuration2 = duration;
+    _sinceLastLoop2 = 0;
+    _sinceLastLoopON2 = 0;
+  }
+}
+
+void PadTeensy::blink_loop_status(int loopID, bool status){
+  if (loopID == 1){
+    _blink_loop_status1 = status;
+    if (!_blink_loop_status1){
+      _trellis->pixels.setPixelColor(4, led_colors[4]);
+      _trellis->pixels.show();
+    }
+  }
+  else if (loopID == 2){
+    _blink_loop_status2 = status;
+    if (!_blink_loop_status2){
+      _trellis->pixels.setPixelColor(12, led_colors[12]);
+      _trellis->pixels.show();
+    }
+  }
+}
+
+void PadTeensy::blink_loop(){
+  // LOOP 1
+  if (_blink_loop_status1){
+    if (_sinceLastLoopON1 >= (_loopDuration1 / 4)) {
+      _sinceLastLoopON1 = 0;
+      _trellis->pixels.setPixelColor(4, led_colors[4]);
+      _trellis->pixels.show();
+    }
+    else if (_sinceLastLoop1 > _loopDuration1){
+      _sinceLastLoop1 = 0;
+      _sinceLastLoopON1 = 0;
+      _trellis->pixels.setPixelColor(4, 0);
+      _trellis->pixels.show();
+    }
+  }
+  // LOOP 2
+  if (_blink_loop_status2){
+    if (_sinceLastLoopON2 >= (_loopDuration2 / 4)) {
+      _sinceLastLoopON2 = 0;
+      _trellis->pixels.setPixelColor(12, led_colors[12]);
+      _trellis->pixels.show();
+    }
+    else if (_sinceLastLoop2 > _loopDuration2){
+      _sinceLastLoop2 = 0;
+      _sinceLastLoopON2 = 0;
+      _trellis->pixels.setPixelColor(12, 0);
+      _trellis->pixels.show();
+    }
   }
 }
 
