@@ -50,20 +50,20 @@ void DualAudioLooper::init(){
 
     Serial.println("Init looper");
     // CONNECT
-    // _patchCord1->connect(*_i2s1, 0, *_inputAmp, 0);
-    // _patchCord2->connect(*_drum, 0, *_inputMixer, 2);
-    // _patchCord3->connect(*_string, 0, *_inputMixer, 1);
-    // _patchCord4->connect(*_inputAmp, 0, *_inputMixer, 0);
-    // _patchCord5->connect(*_inputMixer, 0, *_outputMixer, 0);
-    // _patchCord6->connect(*_inputMixer, 0, *_looperMixer, 0);
-    // _patchCord7->connect(*_looperMixer, *_queue1);
-    // _patchCord8->connect(*_looperMixer, *_queue2);
-    // _patchCord9->connect(*_playSdRaw1, 0, *_outputMixer, 1);
-    // _patchCord10->connect(*_playSdRaw1, 0, *_looperMixer, 1);
-    // _patchCord11->connect(*_playSdRaw2, 0, *_outputMixer, 2);
-    // _patchCord12->connect(*_playSdRaw2, 0, *_looperMixer, 2);
-    // _patchCord13->connect(*_outputMixer, 0, *_i2s2, 0);
-    // _patchCord14->connect(*_outputMixer, 0, *_i2s2, 1);
+    _patchCord1->connect(*_i2s1, 0, *_inputAmp, 0);
+    _patchCord2->connect(*_drum, 0, *_inputMixer, 2);
+    _patchCord3->connect(*_string, 0, *_inputMixer, 1);
+    _patchCord4->connect(*_inputAmp, 0, *_inputMixer, 0);
+    _patchCord5->connect(*_inputMixer, 0, *_outputMixer, 0);
+    _patchCord6->connect(*_inputMixer, 0, *_looperMixer, 0);
+    _patchCord7->connect(*_looperMixer, *_queue1);
+    _patchCord8->connect(*_looperMixer, *_queue2);
+    _patchCord9->connect(*_playSdRaw1, 0, *_outputMixer, 1);
+    _patchCord10->connect(*_playSdRaw1, 0, *_looperMixer, 1);
+    _patchCord11->connect(*_playSdRaw2, 0, *_outputMixer, 2);
+    _patchCord12->connect(*_playSdRaw2, 0, *_looperMixer, 2);
+    _patchCord13->connect(*_outputMixer, 0, *_i2s2, 0);
+    _patchCord14->connect(*_outputMixer, 0, *_i2s2, 1);
 
     // INIT AUDIO SHIELD
     AudioMemory(512);
